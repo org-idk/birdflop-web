@@ -124,6 +124,25 @@ export default component$(({ hidden, id = 'text' }: {
           <ArrowUpDown size={16} /> {t('rgb.colors.shadow.reverse@@Reverse')}
         </button>
       </div>
+      {id === 'shadow' && (
+        <div class="flex gap-1">
+          <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
+            colors.value = cloneColors(rgbStore.colors);
+          }} disabled={rgbStore.syncshadow}>
+            <Copy size={16} /> {t('rgb.colors.shadow.syncBtn@@Sync')}
+          </button>
+          <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
+            colors.value = invertColors(colors.value);
+          }} disabled={rgbStore.syncshadow}>
+            <RefreshCw size={16} /> {t('rgb.colors.shadow.invert@@Invert')}
+          </button>
+          <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
+            colors.value = reverseColors(colors.value);
+          }} disabled={rgbStore.syncshadow}>
+            <ArrowUpDown size={16} /> {t('rgb.colors.shadow.reverse@@Reverse')}
+          </button>
+        </div>
+      )}
       <div class="flex flex-col gap-2 relative" id={'colorlistcolors' + id}>
         {colors.value.map((color, i) => <div
           key={`${i}/${colors.value.length}`}

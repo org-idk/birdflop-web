@@ -26,6 +26,7 @@
         "opacity": "Opacity",
         "brightness": "Brightness",
         "clone": "Clone",
+        "syncBtn": "Sync",
         "invert": "Invert",
         "reverse": "Reverse",
         "enable": "Enable text shadow"
