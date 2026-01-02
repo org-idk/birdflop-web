@@ -22,7 +22,13 @@
       "shadow": {
         "sync": "Sync with text colors",
         "title": "Text Shadow",
-        "warning": "Warning: Text shadow only works with JSON or MiniMessage formatting!"
+        "warning": "Warning: Text shadow only works with JSON or MiniMessage formatting!",
+        "opacity": "Opacity",
+        "brightness": "Brightness",
+        "clone": "Clone",
+        "invert": "Invert",
+        "reverse": "Reverse",
+        "enable": "Enable text shadow"
       },
       "title": "Colors",
       "trimSpaces": {
