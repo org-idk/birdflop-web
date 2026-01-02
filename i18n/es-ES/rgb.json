@@ -22,7 +22,13 @@
       "shadow": {
         "sync": "Sincronización con los colores del texto",
         "title": "Sombra de texto",
-        "warning": "Advertencia: La sombra de texto sólo funciona con formato JSON o MiniMessage."
+        "warning": "Advertencia: La sombra de texto sólo funciona con formato JSON o MiniMessage.",
+        "opacity": "Opacidad",
+        "brightness": "Brillo",
+        "clone": "Clonar",
+        "invert": "Invertir",
+        "reverse": "Invertir orden",
+        "enable": "Habilitar sombra de texto"
       },
       "title": "Colores",
       "trimSpaces": {

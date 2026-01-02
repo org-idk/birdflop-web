@@ -52,7 +52,7 @@ export function renderPreview(rgbStore: typeof rgbDefaults, shadowLength = 4) {
 
   const shadowColors = rgbStore.syncshadow
     ? rgbStore.colors.map((color) => {
-      const shadowRGB = hexToRGB(color.hex).map((c) => c * 0.25);
+      const shadowRGB = hexToRGB(color.hex).map((c) => c * rgbStore.shadowbrightness);
       const shadowHex = `#${rgbToHex(shadowRGB)}`;
       return {
         hex: shadowHex,
@@ -106,7 +106,7 @@ export function renderPreview(rgbStore: typeof rgbDefaults, shadowLength = 4) {
         style={{
           color: `#${hex};`,
           ...(shadowGradient && shadowHex && {
-            textShadow: `${shadowLength}px ${shadowLength}px 0 #${shadowHex};`,
+            textShadow: `${shadowLength}px ${shadowLength}px 0 rgba(${hexToRGB(shadowHex).join(',')}, ${rgbStore.shadowopacity})`,
           }),
         }}
         class={{
@@ -192,7 +192,7 @@ export default component$(() => {
     if (rgbStore.disperse) rgbStore.colors = disperseColors(rgbStore.colors);
     if (rgbStore.syncshadow) {
       rgbStore.shadowcolors = rgbStore.colors.map((color) => {
-        const shadowRGB = hexToRGB(color.hex).map((c) => c * 0.25);
+        const shadowRGB = hexToRGB(color.hex).map((c) => c * rgbStore.shadowbrightness);
         const shadowHex = `#${rgbToHex(shadowRGB)}`;
         return {
           hex: shadowHex,

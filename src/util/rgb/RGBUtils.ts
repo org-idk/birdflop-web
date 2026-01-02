@@ -43,16 +43,16 @@ function applyWrappers(output: string, rgbStore: typeof rgbDefaults): string {
   return out;
 }
 
-function normalizeShadowRGB(rgb: number[]): number[] {
+function normalizeShadowRGB(rgb: number[], opacity: number = 1.0): number[] {
   const norm = rgb.map(c => Math.round((c / 255) * 100) / 100);
-  norm.push(1);
+  norm.push(Math.round(opacity * 100) / 100);
   return norm;
 }
 
 function getShadowColors(rgbStore: typeof rgbDefaults): { hex: string; pos: number }[] {
   if (rgbStore.enableshadow && rgbStore.syncshadow) {
     return rgbStore.colors.map((color) => {
-      const shadowRGB = hexToRGB(color.hex).map((c) => c * 0.25);
+      const shadowRGB = hexToRGB(color.hex).map((c) => c * rgbStore.shadowbrightness);
       return { hex: `#${rgbToHex(shadowRGB)}`, pos: color.pos };
     });
   }
@@ -97,14 +97,14 @@ function buildShadowSegments(
   });
 }
 
-function buildShadowContent(shadowSegments: ShadowSegment[], start: number, end: number): string {
+function buildShadowContent(shadowSegments: ShadowSegment[], start: number, end: number, opacity: number = 1.0): string {
   let currentHex: string | undefined;
   let buffer = '';
   let out = '';
 
   const flush = () => {
     if (!buffer || !currentHex) return;
-    out += `<shadow:${currentHex}:1>${buffer}</shadow>`;
+    out += `<shadow:${currentHex}:${opacity}>${buffer}</shadow>`;
     buffer = '';
   };
 
@@ -163,6 +163,28 @@ export function swapItems(array: any[], indexA: number, indexB: number) {
   [arr[a], arr[b]] = [arr[b], arr[a]];
 
   return arr;
+}
+
+export function cloneShadowColors(textColors: { hex: string; pos: number }[]) {
+  return textColors.map(c => ({ hex: c.hex, pos: c.pos }));
+}
+
+export function invertShadowColors(shadowColors: { hex: string; pos: number }[]) {
+  return shadowColors.map(color => {
+    const rgb = hexToRGB(color.hex);
+    const invertedRgb = invertColor(rgb);
+    return { hex: `#${rgbToHex(invertedRgb)}`, pos: color.pos };
+  });
+}
+
+export function reverseShadowColors(shadowColors: { hex: string; pos: number }[]) {
+  if (shadowColors.length <= 1) return [...shadowColors];
+  
+  const reversed = [...shadowColors].reverse();
+  return reversed.map((color, i) => {
+    const newPos = 100 - color.pos;
+    return { hex: color.hex, pos: newPos };
+  });
 }
 
 export function generateOutput(rgbStore: typeof rgbDefaults) {
@@ -251,7 +273,7 @@ function renderMiniMessageGradient(
 
   const buildShadowRange = (start: number, end: number) => {
     if (!shadowSegments || !shadowSegments.length) return rgbStore.text.substring(start, end);
-    return buildShadowContent(shadowSegments, start, end) || rgbStore.text.substring(start, end);
+    return buildShadowContent(shadowSegments, start, end, rgbStore.shadowopacity) || rgbStore.text.substring(start, end);
   };
 
   const renderUnevenGradient = (text: string) => {
@@ -363,6 +385,6 @@ function buildJsonFormatting(
   if (rgbStore.underline) charFormatting.underlined = true;
   if (rgbStore.strikethrough) charFormatting.strikethrough = true;
   if (rgbStore.obfuscate) charFormatting.obfuscated = true;
-  if (rgbShadow) charFormatting.shadow_color = normalizeShadowRGB(rgbShadow);
+  if (rgbShadow) charFormatting.shadow_color = normalizeShadowRGB(rgbShadow, rgbStore.shadowopacity);
   return charFormatting;
 }

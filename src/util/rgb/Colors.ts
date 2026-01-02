@@ -38,3 +38,17 @@ export function getRandomColor() {
   }
   return color;
 }
+
+export function applyBrightness(rgb: number[], brightness: number): number[] {
+  return rgb.map(c => Math.round(c * brightness));
+}
+
+export function invertColor(rgb: number[]): number[] {
+  return rgb.map(c => 255 - c);
+}
+
+export function rgbToHexWithAlpha(rgba: number[]): string {
+  const hexColor = rgbToHex([rgba[0], rgba[1], rgba[2]]);
+  const alphaHex = hex(Math.round(rgba[3] * 255));
+  return hexColor + alphaHex;
+}

@@ -69,6 +69,8 @@ export const rgbDefaults = {
   underline: false,
   strikethrough: false,
   obfuscate: false,
+  shadowopacity: 1.0,
+  shadowbrightness: 0.25,
 };
 
 export const animTABDefaults = {
