@@ -25,7 +25,7 @@
         "warning": "Warning: Text shadow only works with JSON or MiniMessage formatting!",
         "opacity": "Opacity",
         "brightness": "Brightness",
-        "clone": "Clone",
+        "clone": "Sync",
         "invert": "Invert",
         "reverse": "Reverse",
         "enable": "Enable text shadow"

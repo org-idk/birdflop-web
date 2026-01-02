@@ -107,12 +107,13 @@ export default component$(({ hidden, id = 'text' }: {
         }
       </div>
       <div class="flex gap-1">
-        <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
-          if (id === 'text') rgbStore.shadowcolors = cloneColors(colors.value);
-          else colors.value = cloneColors(rgbStore.colors);
-        }} disabled={id === 'shadow' && rgbStore.syncshadow}>
-          <Copy size={16} /> {t('rgb.colors.shadow.clone@@Clone')}
-        </button>
+        {id === 'shadow' && (
+          <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
+            colors.value = cloneColors(rgbStore.colors);
+          }} disabled={rgbStore.syncshadow}>
+            <Copy size={16} /> {t('rgb.colors.shadow.clone@@Sync')}
+          </button>
+        )}
         <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
           colors.value = invertColors(colors.value);
         }} disabled={id === 'shadow' && rgbStore.syncshadow}>
