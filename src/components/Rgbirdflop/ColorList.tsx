@@ -1,8 +1,8 @@
 import { $, component$, Slot, useContext, useOnDocument, useSignal, useTask$ } from '@builder.io/qwik';
 import { ColorPicker, NumberInput } from '@luminescent/ui-qwik';
 import { inlineTranslate } from 'qwik-speak';
-import { disperseColors, swapItems, sortColors } from '~/util/rgb/RGBUtils';
-import { ChevronDown, ChevronUp, Dices, Ellipsis, Trash } from 'lucide-icons-qwik';
+import { disperseColors, swapItems, sortColors, cloneColors, invertColors, reverseColors } from '~/util/rgb/RGBUtils';
+import { ChevronDown, ChevronUp, Dices, Ellipsis, Trash, Copy, RefreshCw, ArrowUpDown } from 'lucide-icons-qwik';
 import { rgbStoreContext } from '~/routes/resources/rgb';
 import { getBrightness, getRandomColor, hexToRGB } from '~/util/rgb/Colors';
 
@@ -105,6 +105,24 @@ export default component$(({ hidden, id = 'text' }: {
             <Ellipsis size={20} /> {t('rgb.colors.disperse.title@@Disperse')}
           </button>
         }
+      </div>
+      <div class="flex gap-1">
+        <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
+          if (id === 'text') rgbStore.shadowcolors = cloneColors(colors.value);
+          else colors.value = cloneColors(rgbStore.colors);
+        }} disabled={id === 'shadow' && rgbStore.syncshadow}>
+          <Copy size={16} /> {t('rgb.colors.shadow.clone@@Clone')}
+        </button>
+        <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
+          colors.value = invertColors(colors.value);
+        }} disabled={id === 'shadow' && rgbStore.syncshadow}>
+          <RefreshCw size={16} /> {t('rgb.colors.shadow.invert@@Invert')}
+        </button>
+        <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
+          colors.value = reverseColors(colors.value);
+        }} disabled={id === 'shadow' && rgbStore.syncshadow}>
+          <ArrowUpDown size={16} /> {t('rgb.colors.shadow.reverse@@Reverse')}
+        </button>
       </div>
       <div class="flex flex-col gap-2 relative" id={'colorlistcolors' + id}>
         {colors.value.map((color, i) => <div
