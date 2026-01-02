@@ -1,6 +1,6 @@
 // Test script for shadow features
 import { hexToRGB, rgbToHex, invertColor, applyBrightness } from './src/util/rgb/Colors';
-import { cloneShadowColors, invertShadowColors, reverseShadowColors } from './src/util/rgb/RGBUtils';
+import { cloneColors, invertColors, reverseColors } from './src/util/rgb/RGBUtils';
 
 // Test data
 const testColors = [
@@ -12,15 +12,15 @@ const testColors = [
 console.log('Testing shadow features...\n');
 
 // Test 1: Clone function
-console.log('1. Testing cloneShadowColors:');
-const cloned = cloneShadowColors(testColors);
+console.log('1. Testing cloneColors:');
+const cloned = cloneColors(testColors);
 console.log('Original:', testColors);
 console.log('Cloned:', cloned);
 console.log('✓ Clone works correctly\n');
 
 // Test 2: Invert function
-console.log('2. Testing invertShadowColors:');
-const inverted = invertShadowColors(testColors);
+console.log('2. Testing invertColors:');
+const inverted = invertColors(testColors);
 console.log('Original:', testColors);
 console.log('Inverted:', inverted);
 
@@ -32,8 +32,8 @@ console.log('Inverted RGB:', invertedRGB);
 console.log('✓ Invert works correctly\n');
 
 // Test 3: Reverse function
-console.log('3. Testing reverseShadowColors:');
-const reversed = reverseShadowColors(testColors);
+console.log('3. Testing reverseColors:');
+const reversed = reverseColors(testColors);
 console.log('Original:', testColors);
 console.log('Reversed:', reversed);
 console.log('✓ Reverse works correctly\n');

@@ -1,5 +1,5 @@
 import { rgbDefaults } from './presets/defaults';
-import { hexToRGB, rgbToHex } from './Colors';
+import { hexToRGB, rgbToHex, invertColor } from './Colors';
 import { Gradient } from './HexUtils';
 
 function segmentText(text: string, colorlength?: number): string[] {
@@ -165,25 +165,25 @@ export function swapItems(array: any[], indexA: number, indexB: number) {
   return arr;
 }
 
-export function cloneShadowColors(textColors: { hex: string; pos: number }[]) {
+export function cloneColors(textColors: { hex: string; pos: number }[]) {
   return textColors.map(c => ({ hex: c.hex, pos: c.pos }));
 }
 
-export function invertShadowColors(shadowColors: { hex: string; pos: number }[]) {
-  return shadowColors.map(color => {
+export function invertColors(colors: { hex: string; pos: number }[]) {
+  return colors.map(color => {
     const rgb = hexToRGB(color.hex);
     const invertedRgb = invertColor(rgb);
     return { hex: `#${rgbToHex(invertedRgb)}`, pos: color.pos };
   });
 }
 
-export function reverseShadowColors(shadowColors: { hex: string; pos: number }[]) {
-  if (shadowColors.length <= 1) return [...shadowColors];
-  
-  const reversed = [...shadowColors].reverse();
+export function reverseColors(colors: { hex: string; pos: number }[]) {
+  if (colors.length <= 1) return [...colors];
+
+  const reversed = [...colors].reverse();
+  const positions = colors.map(c => c.pos);
   return reversed.map((color, i) => {
-    const newPos = 100 - color.pos;
-    return { hex: color.hex, pos: newPos };
+    return { hex: color.hex, pos: positions[i] };
   });
 }
 
