@@ -18,7 +18,26 @@ import { eq, sql } from 'drizzle-orm';
 
 export const usePreset = routeLoader$(async ({ params }) => {
   const db = getDB();
-  if (!db) throw new Error('No database connection');
+  if (!db) {
+    return {
+      id: 0,
+      name: 'Local Preview',
+      preset: combinedDefaults,
+      user: {
+        id: 'local',
+        name: 'Local User',
+        image: null,
+      },
+      saveCount: 0,
+      createdAt: new Date(),
+      userId: 'local',
+      author: 'Local User',
+      description: 'Local Preview Description',
+      upvotes: 0,
+      downvotes: 0,
+      pending: false,
+    };
+  }
   if (isNaN(Number(params.id))) throw new Error('No preset ID provided');
 
   const presetInfo = await db.select({

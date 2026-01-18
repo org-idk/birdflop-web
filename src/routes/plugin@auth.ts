@@ -16,7 +16,7 @@ import { eq } from 'drizzle-orm';
 // This is a temporary secret, in case the env variable is not set
 const tempsecret = Math.random().toString(36).slice(2);
 
-export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
+const auth = QwikAuth$(
   (event) => {
     let secret = event?.platform?.env?.AUTH_SECRET || process.env.AUTH_SECRET;
     if (!secret) {
@@ -24,6 +24,13 @@ export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
       secret = tempsecret;
     }
     const db = getDB();
+
+    if (!db) {
+      return {
+        providers: [],
+        secret,
+      };
+    }
 
     return {
       providers: [
@@ -102,3 +109,12 @@ export const { onRequest, useSession, useSignIn, useSignOut } = QwikAuth$(
     };
   },
 );
+
+export const { useSession, useSignIn, useSignOut } = auth;
+
+export const onRequest: import('@builder.io/qwik-city').RequestHandler = (event) => {
+  if (!getDB()) {
+    return;
+  }
+  return auth.onRequest(event);
+};

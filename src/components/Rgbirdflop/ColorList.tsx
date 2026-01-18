@@ -1,8 +1,8 @@
 import { $, component$, Slot, useContext, useOnDocument, useSignal, useTask$ } from '@builder.io/qwik';
 import { ColorPicker, NumberInput } from '@luminescent/ui-qwik';
 import { inlineTranslate } from 'qwik-speak';
-import { disperseColors, swapItems, sortColors, cloneColors, invertColors, reverseColors } from '~/util/rgb/RGBUtils';
-import { ChevronDown, ChevronUp, Dices, Ellipsis, Trash, Copy, RefreshCw, ArrowUpDown } from 'lucide-icons-qwik';
+import { disperseColors, swapItems, sortColors, invertColors, reverseColors } from '~/util/rgb/RGBUtils';
+import { ChevronDown, ChevronUp, Dices, Ellipsis, Trash, RefreshCw, ArrowUpDown } from 'lucide-icons-qwik';
 import { rgbStoreContext } from '~/routes/resources/rgb';
 import { getBrightness, getRandomColor, hexToRGB } from '~/util/rgb/Colors';
 
@@ -35,9 +35,9 @@ export default component$(({ hidden, id = 'text' }: {
 
   return (
     <div class={{
-      'flex flex-col gap-2 transition-all duration-200 sm:opacity-100 sm:pointer-events-auto sm:h-auto': true,
-      'h-0 opacity-0 pointer-events-none': hidden,
-      'opacity-100 pointer-events-auto': !hidden,
+      'flex flex-col gap-2 transition-all duration-200': true,
+      'max-h-0 opacity-0 pointer-events-none overflow-hidden': hidden,
+      'max-h-[1000px] opacity-100 pointer-events-auto': !hidden,
     }} id={'colorlist' + id}>
       <Slot />
       {rgbStore.format.color != 'MiniMessage' && id == 'text' &&
@@ -106,25 +106,28 @@ export default component$(({ hidden, id = 'text' }: {
           </button>
         }
       </div>
-      <div class="flex gap-1">
-        {id === 'shadow' && (
-          <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
-            colors.value = cloneColors(rgbStore.colors);
-          }} disabled={rgbStore.syncshadow}>
-            <Copy size={16} /> {t('rgb.colors.shadow.clone@@Sync')}
+      {id === 'text' && (
+        <div class="flex gap-1">
+          <button
+            type="button"
+            class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center"
+            onClick$={() => {
+              colors.value = invertColors(colors.value);
+            }}
+          >
+            <RefreshCw size={16} /> {t('rgb.colors.shadow.invert@@Invert')}
           </button>
-        )}
-        <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
-          colors.value = invertColors(colors.value);
-        }} disabled={id === 'shadow' && rgbStore.syncshadow}>
-          <RefreshCw size={16} /> {t('rgb.colors.shadow.invert@@Invert')}
-        </button>
-        <button type="button" class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center" onClick$={() => {
-          colors.value = reverseColors(colors.value);
-        }} disabled={id === 'shadow' && rgbStore.syncshadow}>
-          <ArrowUpDown size={16} /> {t('rgb.colors.shadow.reverse@@Reverse')}
-        </button>
-      </div>
+          <button
+            type="button"
+            class="lum-btn p-2 flex-1 text-xs sm:text-sm flex gap-1 justify-center items-center"
+            onClick$={() => {
+              colors.value = reverseColors(colors.value);
+            }}
+          >
+            <ArrowUpDown size={16} /> {t('rgb.colors.shadow.reverse@@Reverse')}
+          </button>
+        </div>
+      )}
       <div class="flex flex-col gap-2 relative" id={'colorlistcolors' + id}>
         {colors.value.map((color, i) => <div
           key={`${i}/${colors.value.length}`}

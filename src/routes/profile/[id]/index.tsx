@@ -14,7 +14,23 @@ import { inlineTranslate } from 'qwik-speak';
 
 export const useUser = routeLoader$(async ({ params }) => {
   const db = getDB();
-  if (!db) throw new Error('No database connection');
+  if (!db) {
+    return {
+      userInfo: {
+        id: params.id,
+        name: 'Local User',
+        username: 'local',
+        email: 'local@example.com',
+        emailVerified: null,
+        image: null,
+        privatePresets: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      userPresets: [],
+      errors: ['No database connection available in this environment.'],
+    };
+  }
 
   const userInfo = await db.select()
     .from(users)

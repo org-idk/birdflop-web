@@ -51,8 +51,8 @@ export const rgbDefaults = {
     { hex: '#545eb6', pos: 100 },
   ],
   shadowcolors: [
-    { hex: '#15373D', pos: 0 },
-    { hex: '#15182E', pos: 100 },
+    { hex: '#54daf4', pos: 0 },
+    { hex: '#545eb6', pos: 100 },
   ],
   colorlength: 1,
   text: 'Birdflop',

@@ -16,6 +16,7 @@ import { rgbDefaults } from '~/util/rgb/presets/defaults';
 import {
   disperseColors,
   generateOutput,
+  getShadowColors,
   sortColors,
 } from '~/util/rgb/RGBUtils';
 
@@ -50,16 +51,7 @@ export function renderPreview(rgbStore: typeof rgbDefaults, shadowLength = 4) {
   if (!rgbStore.text) return '\u00A0';
   if (rgbStore.colors.length < 1) return rgbStore.text;
 
-  const shadowColors = rgbStore.syncshadow
-    ? rgbStore.colors.map((color) => {
-      const shadowRGB = hexToRGB(color.hex).map((c) => c * rgbStore.shadowbrightness);
-      const shadowHex = `#${rgbToHex(shadowRGB)}`;
-      return {
-        hex: shadowHex,
-        pos: color.pos,
-      };
-    })
-    : (rgbStore.enableshadow ? rgbStore.shadowcolors : []);
+  const shadowColors = getShadowColors(rgbStore);
 
   const colorsRGB = sortColors(rgbStore.colors).map((color) => ({
     rgb: hexToRGB(color.hex),
@@ -192,10 +184,8 @@ export default component$(() => {
     if (rgbStore.disperse) rgbStore.colors = disperseColors(rgbStore.colors);
     if (rgbStore.syncshadow) {
       rgbStore.shadowcolors = rgbStore.colors.map((color) => {
-        const shadowRGB = hexToRGB(color.hex).map((c) => c * rgbStore.shadowbrightness);
-        const shadowHex = `#${rgbToHex(shadowRGB)}`;
         return {
-          hex: shadowHex,
+          hex: color.hex,
           pos: color.pos,
         };
       });
@@ -247,17 +237,17 @@ export default component$(() => {
       // const shouldShowAds = usPreferredRegions.some(region => tz.startsWith(region));
       const shouldShowAds = !usPreferredRegions.some(region => tz.startsWith(region));
 
-      if (shouldShowAds) {
-        showAds.value = true;
-        if (stored && AD_VARIANTS[stored]) {
-          adVariant.value = stored;
-        } else {
-          const keys = Object.keys(AD_VARIANTS) as AdVariantKey[];
-          const chosen = keys[Math.floor(Math.random() * keys.length)];
-          adVariant.value = chosen;
-          localStorage.setItem(AD_VARIANT_STORAGE_KEY, chosen);
-        }
-      }
+      // if (shouldShowAds) {
+      //   showAds.value = true;
+      //   if (stored && AD_VARIANTS[stored]) {
+      //     adVariant.value = stored;
+      //   } else {
+      //     const keys = Object.keys(AD_VARIANTS) as AdVariantKey[];
+      //     const chosen = keys[Math.floor(Math.random() * keys.length)];
+      //     adVariant.value = chosen;
+      //     localStorage.setItem(AD_VARIANT_STORAGE_KEY, chosen);
+      //   }
+      // }
     } catch (err) {
       console.warn('Ad region detection failed', err);
     }
@@ -362,6 +352,23 @@ export default component$(() => {
 
   const adAsset = adVariant.value ? AD_VARIANTS[adVariant.value] : null;
 
+  const isSticky = useSignal(false);
+  // eslint-disable-next-line qwik/no-use-visible-task
+  useVisibleTask$(() => {
+    const observer = new IntersectionObserver(
+      ([e]) => {
+        isSticky.value = e.intersectionRatio < 1;
+      },
+      {
+        threshold: [1],
+        rootMargin: '-65px 0px 0px 0px',
+      },
+    );
+    const el = document.getElementById('sticky-container');
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
+  });
+
   return (
     <section class='relative flex mx-auto w-full px-6 min-h-svh pt-20 gap-8 justify-center'>
       {showAds.value && adAsset && (
@@ -377,17 +384,25 @@ export default component$(() => {
             'nav.resources.hexGradient.description@@Hex gradient text generator, Powered by Birdflop, a 501(c)(3) nonprofit Minecraft host.',
           )}
         </p>
-        <hr />
 
-        <Input>
-          {renderPreview(rgbStore, previewStyle.value == 'default' ? 4 : 2)}
-        </Input>
+        <div
+          id="sticky-container"
+          class={{
+            'sticky top-[64px] z-40 -mx-6 px-6 transition-all duration-200': true,
+            'lum-bg-nav-bg/80 backdrop-blur-md border-b border-lum-border/10 py-2 mb-4': isSticky.value,
+            'py-0 mb-4': !isSticky.value,
+          }}
+        >
+          <Input>
+            {renderPreview(rgbStore, previewStyle.value == 'default' ? 4 : 2)}
+          </Input>
 
-        <ColorMap />
+          <ColorMap />
+        </div>
 
         <div class='grid sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-2 mt-1'>
           <div class='flex flex-col gap-2 relative' id='column1'>
-            <Accordion sectionName='colors' alwaysOpen>
+            <Accordion sectionName='colors'>
               <Palette size={26} />
               {t('rgb.colors.title@@Colors')}
             </Accordion>
@@ -402,7 +417,7 @@ export default component$(() => {
             class='flex flex-col gap-1 md:col-span-2 sm:px-2 sm:border-x border-lum-border/10'
             id='column2'
           >
-            <Accordion sectionName='output' alwaysOpen>
+            <Accordion sectionName='output'>
               <Clipboard size={26} />
               {t('rgb.output.title@@Output')}
             </Accordion>
@@ -415,7 +430,7 @@ export default component$(() => {
           </div>
 
           <div class='mb-4 flex flex-col gap-2' id='column3'>
-            <Accordion sectionName='presets' alwaysOpen>
+            <Accordion sectionName='presets'>
               <Save size={26} />
               {t('rgb.presets.title@@Presets')}
             </Accordion>

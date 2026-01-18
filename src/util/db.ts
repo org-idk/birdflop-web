@@ -8,7 +8,6 @@ export type AppDatabase = DrizzleD1Database<typeof DatabaseSchema>;
 let _db: AppDatabase;
 
 export function getDB() {
-  if (!_db) throw new Error('DB not set');
   return _db;
 }
 

@@ -58,7 +58,20 @@ export const usePresets = routeLoader$(async ({ url, sharedMap }) => {
 
   try {
     const db = getDB();
-    if (!db) throw new Error('No database client');
+    if (!db) {
+      return {
+        publicPresets: [],
+        presetCount: 0,
+        page,
+        perPage,
+        searchTerm,
+        showPending,
+        showSaved,
+        sortBy,
+        sortOrder,
+        errors: ['No database client available in this environment.'],
+      };
+    }
 
     presetCount = await db.select({
       count: count(),

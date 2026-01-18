@@ -207,14 +207,14 @@ export default component$(() => {
 
         <div class="grid sm:grid-cols-2 gap-2">
           <div class="flex flex-col gap-2" id="inputcolumn">
-            <Accordion sectionName="options" alwaysOpen>
+            <Accordion sectionName="options">
               <Settings size={26} />
               {t('banner.options.title@@Options')}
             </Accordion>
             <div class={{
-              'flex flex-col gap-2 transition-all duration-200 sm:opacity-100 sm:pointer-events-auto sm:max-h-full': true,
+              'flex flex-col gap-2 transition-all duration-200 overflow-hidden': true,
               'max-h-0 opacity-0 pointer-events-none': !openItemsStore.items.includes('options'),
-              'max-h-auto opacity-100 pointer-events-auto': openItemsStore.items.includes('options'),
+              'max-h-[2000px] opacity-100 pointer-events-auto': openItemsStore.items.includes('options'),
             }}>
               <h6 class="my-0! flex gap-3 items-center">
                 {t('banner.options.baseColor.title@@Base Color')}
@@ -354,7 +354,7 @@ export default component$(() => {
               {t('banner.command.title@@Command')}
             </Accordion>
             <div class={{
-              'flex flex-col gap-2 transition-all duration-200': true,
+              'flex flex-col gap-2 transition-all duration-200 overflow-hidden': true,
               'max-h-0 opacity-0 pointer-events-none': !openItemsStore.items.includes('command'),
               'max-h-62.5 opacity-100 pointer-events-auto': openItemsStore.items.includes('command'),
             }} id="command">
@@ -380,14 +380,14 @@ export default component$(() => {
             </div>
           </div>
           <div class="flex flex-col gap-2 sm:border-l sm:border-l-lum-border/50 sm:pl-2" id="outputcolumn">
-            <Accordion sectionName="preview" alwaysOpen>
+            <Accordion sectionName="preview">
               <Eye size={26} />
               {t('banner.preview@@Preview')}
             </Accordion>
             <canvas ref={preview} id="preview" class={{
-              'lum-card p-0 flex-col gap-2 transition-all duration-200 sm:opacity-100 sm:pointer-events-auto sm:max-h-full': true,
+              'lum-card p-0 flex-col gap-2 transition-all duration-200 overflow-hidden': true,
               'max-h-0 opacity-0 pointer-events-none': !openItemsStore.items.includes('preview'),
-              'max-h-auto opacity-100 pointer-events-auto': openItemsStore.items.includes('preview'),
+              'max-h-[1000px] opacity-100 pointer-events-auto': openItemsStore.items.includes('preview'),
             }} />
             <canvas ref={textureCanvas} id="texture" class="hidden" style={{
               imageRendering: 'pixelated',

@@ -63,9 +63,9 @@ export default component$(({ hidden }: {
 
   return (
     <div class={{
-      'flex flex-col gap-2 transition-all duration-200 sm:opacity-100 sm:pointer-events-auto sm:h-auto': true,
-      'h-0 opacity-0 pointer-events-none': hidden,
-      'opacity-100 pointer-events-auto': !hidden,
+      'flex flex-col gap-2 transition-all duration-200': true,
+      'max-h-0 opacity-0 pointer-events-none overflow-hidden': hidden,
+      'max-h-[2000px] opacity-100 pointer-events-auto': !hidden,
     }} id="presets">
       <div class="flex flex-col">
         <div class="flex gap-1">

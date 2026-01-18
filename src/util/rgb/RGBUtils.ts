@@ -49,16 +49,16 @@ function normalizeShadowRGB(rgb: number[], opacity: number = 1.0): number[] {
   return norm;
 }
 
-function getShadowColors(rgbStore: typeof rgbDefaults): { hex: string; pos: number }[] {
-  if (rgbStore.enableshadow && rgbStore.syncshadow) {
-    return rgbStore.colors.map((color) => {
+export function getShadowColors(rgbStore: typeof rgbDefaults): { hex: string; pos: number }[] {
+  if (!rgbStore.enableshadow) return [];
+
+  const colors = rgbStore.syncshadow ? rgbStore.colors : rgbStore.shadowcolors;
+
+  if (colors && colors.length > 0) {
+    return colors.map((color) => {
       const shadowRGB = hexToRGB(color.hex).map((c) => c * rgbStore.shadowbrightness);
       return { hex: `#${rgbToHex(shadowRGB)}`, pos: color.pos };
     });
-  }
-
-  if (rgbStore.shadowcolors && rgbStore.shadowcolors.length > 0 && rgbStore.enableshadow) {
-    return rgbStore.shadowcolors.map((color) => ({ hex: color.hex, pos: color.pos }));
   }
 
   return [];
@@ -238,9 +238,10 @@ function renderSingleColorOutput(singleHex: string, rgbStore: typeof rgbDefaults
     const jsonOutput: JsonOutput = { text: '', extra: [] };
 
     let shadowGradient: Gradient | undefined;
-    if (!rgbStore.syncshadow && rgbStore.shadowcolors && rgbStore.shadowcolors.length > 0) {
-      const shadowColors = rgbStore.shadowcolors.map((color) => ({ rgb: hexToRGB(color.hex), pos: color.pos }));
-      shadowGradient = new Gradient(shadowColors, rgbStore.text.length / (rgbStore.colorlength ?? 1));
+    const shadowColors = getShadowColors(rgbStore);
+    if (shadowColors.length > 0) {
+      const shadowRGBs = shadowColors.map((color) => ({ rgb: hexToRGB(color.hex), pos: color.pos }));
+      shadowGradient = new Gradient(shadowRGBs, rgbStore.text.length / (rgbStore.colorlength ?? 1));
     }
 
     const segments = segmentText(rgbStore.text, rgbStore.colorlength);
@@ -324,9 +325,10 @@ function renderJsonGradient(colors: { hex: string; pos: number }[], rgbStore: ty
 
   const gradient = new Gradient(newColors, rgbStore.text.length / (rgbStore.colorlength ?? 1));
   let shadowGradient: Gradient | undefined;
-  if (!rgbStore.syncshadow) {
-    const shadowColors = rgbStore.shadowcolors.map((color) => ({ rgb: hexToRGB(color.hex), pos: color.pos }));
-    shadowGradient = new Gradient(shadowColors, rgbStore.text.length / (rgbStore.colorlength ?? 1));
+  const shadowColors = getShadowColors(rgbStore);
+  if (shadowColors.length > 0) {
+    const shadowRGBs = shadowColors.map((color) => ({ rgb: hexToRGB(color.hex), pos: color.pos }));
+    shadowGradient = new Gradient(shadowRGBs, rgbStore.text.length / (rgbStore.colorlength ?? 1));
   }
 
   const jsonOutput: JsonOutput = { text: '', extra: [] };

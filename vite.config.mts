@@ -16,10 +16,12 @@ import pkg from "./package.json";
 
 let platform = {};
 
+/*
 if(process.env.NODE_ENV === 'development') {
   const { getPlatformProxy } = await import('wrangler');
   platform = await getPlatformProxy();
 }
+*/
 
 type PkgDep = Record<string, string>;
 const { dependencies = {}, devDependencies = {} } = pkg as any as {
